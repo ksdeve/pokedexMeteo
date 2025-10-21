@@ -1,11 +1,12 @@
 {
-  "name": "pokedex-servglace",
+  "name": "pokedex-service",
   "version": "1.0.0",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && node dist/index.js"
+    "start": "npm run build && node dist/index.js",
+    "test": "jest"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
@@ -14,8 +15,13 @@
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.6.0",
+    "@types/supertest": "^6.0.3",
+    "jest": "^30.2.0",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.1",
-    "typescript": "^5.2.2",
-    "@types/node": "^20.6.0"
+    "typescript": "^5.2.2"
   }
 }

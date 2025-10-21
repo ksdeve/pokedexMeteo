@@ -1,20 +1,22 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "esnext",
     "target": "ES2020",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "sourceMap": true,
+    "isolatedModules": true,
     "declaration": true,
     "declarationMap": true,
-    "types": ["node"]
+    "types": ["node", "jest"],
+    "allowJs": true
   },
-  "include": ["**/*.ts", "seed.js", "seed.js"],
+  "include": ["src/**/*.ts", "src/seed.js"],
   "exclude": ["node_modules", "dist"]
 }

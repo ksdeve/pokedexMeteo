@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
+    "module": "esnext",
     "target": "ES2020",
-    "moduleResolution": "nodenext",
+    "moduleResolution": "node",
     "outDir": "dist",
     "rootDir": ".",
     "esModuleInterop": true,
@@ -11,10 +11,11 @@
     "forceConsistentCasingInFileNames": true,
     "verbatimModuleSyntax": true,
     "sourceMap": true,
+    "isolatedModules": true,
     "declaration": true,
     "declarationMap": true,
-    "types": ["node"]
+    "types": ["node", "jest"]
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "jest.config.js"],
   "exclude": ["node_modules", "dist"]
 }
