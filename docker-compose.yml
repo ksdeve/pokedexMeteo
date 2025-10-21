@@ -1,0 +1,40 @@
+    services:
+      mongo:
+        image: mongo:6
+        restart: unless-stopped
+        ports:
+          - '27017:27017'
+        volumes:
+          - mongo_data:/data/db
+
+      redis:
+        image: redis:7
+        restart: unless-stopped
+        ports:
+          - '6379:6379'
+
+      weather-service:
+        build: ./weather-service
+        ports:
+          - '4001:4001'
+        environment:
+          - REDIS_HOST=redis
+          - CACHE_TTL_SECONDS=600
+        depends_on:
+          - redis
+
+      pokedex-service:
+        build: ./pokedex-service
+        ports:
+          - '4000:4000'
+        environment:
+          - MONGO_URI=mongodb://mongo:27017/pokedex
+          - WEATHER_SERVICE_URL=http://weather-service:4001
+        depends_on:
+          - mongo
+          - weather-service
+
+
+
+    volumes:
+      mongo_data:
