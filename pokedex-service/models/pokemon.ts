@@ -1,6 +1,6 @@
 import mongoose, { Document, Model } from 'mongoose';
 
-// --- Interfaces TS ---
+// Interfaces TS
 export interface PokemonStats {
   hp: number;
   attack: number;
@@ -17,7 +17,7 @@ export interface PokemonType extends Document {
   stats: PokemonStats;
 }
 
-// --- Schéma Mongoose ---
+// Schéma Mongoose
 const pokemonSchema = new mongoose.Schema<PokemonType>({
   uid: { type: String, required: true, unique: true },
   name: { type: String, required: true },
@@ -32,6 +32,6 @@ const pokemonSchema = new mongoose.Schema<PokemonType>({
   }
 });
 
-// --- Export du modèle ---
+// Export du modèle
 const Pokemon: Model<PokemonType> = mongoose.model<PokemonType>('Pokemon', pokemonSchema);
 export default Pokemon;
