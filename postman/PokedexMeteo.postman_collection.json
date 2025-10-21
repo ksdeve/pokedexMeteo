@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "c0eec502-9f44-4136-8752-b9f885b5276b",
+		"name": "PokedexMeteo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26743714",
+		"_collection_link": "https://solar-spaceship-349908.postman.co/workspace/40a13f21-1c53-416c-bd48-002863815537/collection/26743714-c0eec502-9f44-4136-8752-b9f885b5276b?action=share&source=collection_link&creator=26743714"
+	},
+	"item": [
+		{
+			"name": "pokemon",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "pokemonMeteo",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
