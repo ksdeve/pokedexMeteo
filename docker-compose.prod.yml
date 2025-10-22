@@ -1,5 +1,3 @@
-version: '3.9'
-
 networks:
   monitoring_net:
     driver: bridge
@@ -13,8 +11,8 @@ services:
   mongo:
     image: mongo:6.0
     restart: unless-stopped
-    ports:
-      - '27017:27017'
+    expose:
+      - '27017'
     volumes:
       - mongo_data:/data/db
     networks:
@@ -23,17 +21,16 @@ services:
   redis:
     image: redis:7.0
     restart: unless-stopped
-    ports:
-      - '6379:6379'
+    expose:
+      - '6379'
     volumes:
       - redis_data:/data
     networks:
       - monitoring_net
 
   weather-service:
-    build: ./weather-service
-    ports:
-      - '4001:4001'
+    image: ton-registry/weather-service:latest
+    restart: unless-stopped
     environment:
       - REDIS_HOST=redis
       - CACHE_TTL_SECONDS=600
@@ -43,9 +40,8 @@ services:
       - monitoring_net
 
   pokedex-service:
-    build: ./pokedex-service
-    ports:
-      - '4000:4000'
+    image: ton-registry/pokedex-service:latest
+    restart: unless-stopped
     environment:
       - MONGO_URI=mongodb://mongo:27017/pokedex
       - WEATHER_SERVICE_URL=http://weather-service:4001
@@ -58,8 +54,8 @@ services:
   prometheus:
     image: prom/prometheus:v2.48.0
     restart: unless-stopped
-    ports:
-      - '9090:9090'
+    expose:
+      - '9090'
     volumes:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
@@ -71,13 +67,28 @@ services:
   grafana:
     image: grafana/grafana:10.0.0
     restart: unless-stopped
-    ports:
-      - '3000:3000'
+    expose:
+      - '3000'
     env_file:
-      - .env   # Contient GF_SECURITY_ADMIN_USER et GF_SECURITY_ADMIN_PASSWORD
+      - .env
     volumes:
       - grafana_data:/var/lib/grafana
     depends_on:
       - prometheus
+    networks:
+      - monitoring_net
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - pokedex-service
+      - grafana
     networks:
       - monitoring_net

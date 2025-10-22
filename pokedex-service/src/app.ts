@@ -8,12 +8,29 @@ import Pokemon from './models/pokemon.js';
 import type { PokemonType } from './models/pokemon';
 import type WeatherResponse from './models/weatherResponse.js';
 import type WeatherEffect from './models/weatherEffect.js';
+import client from 'prom-client';
 
 export const app = express();
 app.use(express.json());
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/pokedex';
 const WEATHER_SERVICE_URL = process.env.WEATHER_SERVICE_URL || 'http://localhost:4001';
+
+const register = new client.Registry();
+client.collectDefaultMetrics({ register });
+
+const httpRequestCounter = new client.Counter({
+  name: 'pokemon_http_requests_total',
+  help: 'Nombre total de requêtes HTTP reçues par le service pokemon',
+  labelNames: ['route', 'method'],
+});
+
+register.registerMetric(httpRequestCounter);
+
+app.use((req, _res, next) => {
+  httpRequestCounter.inc({ route: req.path, method: req.method });
+  next();
+});
 
 // Connexion à MongoDB
 mongoose.connect(MONGO_URI)
@@ -56,10 +73,20 @@ export function computeWeatherEffects(pokemon: PokemonType, weatherState: string
 }
 
 // Routes
+
+
+
+app.get('/metrics', async (_req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
+
 app.get('/pokemon', async (_req: Request, res: Response) => {
   const pokemons = await Pokemon.find().lean<PokemonType[]>();
   res.json(pokemons);
 });
+
+
 
 app.get('/pokemon/:city/:uid', async (req: Request, res: Response) => {
   const { city, uid } = req.params;

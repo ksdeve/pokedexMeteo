@@ -8,6 +8,7 @@ import type GeoData from './models/geoCodingDTO.js';
 import type WeatherPayload from './models/weatherPayload.js';
 import type { WeatherState } from './models/weatherPayload.js';
 import type WeatherData from './models/weatherData.js';
+import client from 'prom-client';
 
 const app = express();
 const PORT: number = parseInt(process.env.PORT || '4001', 10);
@@ -17,6 +18,25 @@ const REDIS_HOST: string = process.env.REDIS_HOST || 'localhost';
 const REDIS_PORT: number = parseInt(process.env.REDIS_PORT || '6379', 10);
 const REDIS_PASSWORD: string | undefined = process.env.REDIS_PASSWORD || undefined;
 const CACHE_TTL_SECONDS: number = parseInt(process.env.CACHE_TTL_SECONDS || '600', 10);
+
+// Registry par défaut
+const register = new client.Registry();
+
+client.collectDefaultMetrics({ register });
+
+// Exemple compteur HTTP
+const httpRequestCounter = new client.Counter({
+  name: 'weather_http_requests_total',
+  help: 'Nombre total de requêtes HTTP reçues par le service météo',
+  labelNames: ['route', 'method'],
+});
+
+register.registerMetric(httpRequestCounter);
+
+app.use((req, _res, next) => {
+  httpRequestCounter.inc({ route: req.path, method: req.method });
+  next();
+});
 
 
 
@@ -42,6 +62,10 @@ function weatherCodeToState(code: number): WeatherState {
   return 'unknown';
 }
 
+app.get('/metrics', async (_req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.end(await register.metrics());
+});
 
 // Route principale : /weather?city=Paris
 app.get('/weather', async (req: Request, res: Response) => {

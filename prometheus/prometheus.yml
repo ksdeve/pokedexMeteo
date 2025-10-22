@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'weather-service'
+    static_configs:
+      - targets: ['weather-service:4001']
+
+  - job_name: 'pokedex-service'
+    static_configs:
+      - targets: ['pokedex-service:4000']
